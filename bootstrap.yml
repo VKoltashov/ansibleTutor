@@ -1,0 +1,40 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+   - name: install updates (Ubuntu)
+     tags: always
+     apt:
+       update_cache: yes
+       upgrade: dist
+     when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create robot user
+    tags: always
+    user:
+      name: robot
+      groups: root
+
+  - name: add ssh key for robot
+    tags: always
+    authorized_key:
+      user: robot
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILWRA0UZXVozywsuxdQcO1wlgPcMRiMeFyQfxqXy3H1U kube"
+
+  - name : add sudoers file for robot
+    tags: always
+    copy:
+      src: sudoer_robot
+      dest: /etc/sudoers.d/robot
+      owner: root
+      group: root
+      mode: 0440
+
+
+

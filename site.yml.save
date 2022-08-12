@@ -8,9 +8,8 @@
      tags: always
      apt:
        update_cache: yes
-     changed_when: false
+       upgrade: dist
      when: ansible_distribution == "Ubuntu"
-
 
 - hosts: web_servers
   become: true
@@ -38,6 +37,11 @@
       name: apache2
       state: started
       enabled: yes
+
+  - name: change e-mail address for admin
+    tags: apache, apache2
+    lineinfile:
+      path: /etc/
 
 
 - hosts: db_servers
